@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel - Krishnaa Mens Wear</title>
+  <meta charset="UTF-8">
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB9gYDFOtNuoy_xDtZAB8VhqO_SYBs2kUQ",
+      authDomain: "krushnamenswear009.firebaseapp.com",
+      projectId: "krushnamenswear009"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    window.adminLogin = async function() {
+      const email = document.getElementById("adminEmail").value;
+      const password = document.getElementById("adminPassword").value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        loadUsers();
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    async function loadUsers() {
+      const querySnapshot = await getDocs(collection(db, "users"));
+      let html = "<h2>Login Users</h2>";
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        html += "<p>" + (data.mobile || data.email) + "</p>";
+      });
+      document.getElementById("data").innerHTML = html;
+    }
+  </script>
+</head>
+
+<body style="font-family:Arial;text-align:center;background:#0d1b2a;color:white;padding:40px;">
+
+<h1>Admin Login</h1>
+
+<input type="email" id="adminEmail" placeholder="Admin Email" style="padding:10px;"><br><br>
+<input type="password" id="adminPassword" placeholder="Admin Password" style="padding:10px;"><br><br>
+
+<button onclick="adminLogin()" style="padding:10px 20px;background:#00b4ff;color:white;border:none;">Login</button>
+
+<div id="data" style="margin-top:30px;"></div>
+
+</body>
+</html>
