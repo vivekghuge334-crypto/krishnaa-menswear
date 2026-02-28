@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Krushna Mens Wear</title>
+  <meta charset="UTF-8">
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyB9gYDFOtNuoy_xDtZAB8VhqO_SYBs2kUQ",
+      authDomain: "krushnamenswear009.firebaseapp.com",
+      projectId: "krushnamenswear009"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    function toggleMode() {
+      const modeText = document.getElementById("modeText");
+      if (modeText.innerText === "Login") {
+        modeText.innerText = "Sign Up";
+      } else {
+        modeText.innerText = "Login";
+      }
+    }
+
+    window.sendOTP = function() {
+      const phoneNumber = document.getElementById("phone").value;
+
+      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        'size': 'normal'
+      });
+
+      auth.signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
+        .then(function (confirmationResult) {
+          window.confirmationResult = confirmationResult;
+          alert("OTP Sent 🔥");
+        }).catch(function (error) {
+          alert(error.message);
+        });
+    }
+
+    window.verifyOTP = function() {
+      const code = document.getElementById("otp").value;
+
+      confirmationResult.confirm(code).then(function (result) {
+        alert("Login Successful 👑");
+        window.location.href = "admin.html";
+      }).catch(function (error) {
+        alert("Invalid OTP");
+      });
+    }
+  </script>
+</head>
+
+<body style="font-family:Arial;text-align:center;background:#0d1b2a;color:white;padding:40px;">
+
+<h1 style="color:#00b4ff;">Krushna Mens Wear</h1>
+
+<h2 id="modeText">Login</h2>
+
+<input type="text" id="phone" placeholder="+91XXXXXXXXXX" style="padding:10px;"><br><br>
+
+<div id="recaptcha-container"></div><br>
+
+<button onclick="sendOTP()" style="padding:10px 20px;background:#00b4ff;color:white;border:none;">Send OTP</button>
+
+<br><br>
+
+<input type="text" id="otp" placeholder="Enter OTP" style="padding:10px;"><br><br>
+
+<button onclick="verifyOTP()" style="padding:10px 20px;background:#00b4ff;color:white;border:none;">Verify & Continue</button>
+
+<br><br>
+
+<button onclick="toggleMode()" style="background:none;border:none;color:#00b4ff;cursor:pointer;">
+Switch Login / Sign Up
+</button>
+
+</body>
+</html>
