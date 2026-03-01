@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Login - Krushna Mens Wear</title>
+<script type="module">
+import { firebaseConfig } from './firebase.js';
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+window.signup = async function(){
+  const name = name.value;
+  const mobile = mobile.value;
+  const emailVal = email.value;
+  const pass = password.value;
+
+  const user = await createUserWithEmailAndPassword(auth,emailVal,pass);
+  await sendEmailVerification(user.user);
+
+  await setDoc(doc(db,"users",user.user.uid),{
+    name:name,
+    mobile:mobile,
+    role:"user"
+  });
+
+  alert("Verify email then login.");
+}
+
+window.login = async function(){
+  const user = await signInWithEmailAndPassword(auth,email.value,password.value);
+  if(!user.user.emailVerified){ alert("Verify email first"); return;}
+  window.location="index.html";
+}
+</script>
+<style>
+body{font-family:Arial;text-align:center;background:#f5f5f5}
+.box{margin-top:100px}
+input{padding:10px;margin:6px;width:260px}
+button{padding:10px 20px;margin:5px;background:#0d47a1;color:white;border:none}
+</style>
+</head>
+<body>
+<div class="box">
+<h2>Krushna Mens Wear</h2>
+<input id="name" placeholder="Full Name"><br>
+<input id="mobile" placeholder="Mobile Number"><br>
+<input id="email" placeholder="Email"><br>
+<input id="password" type="password" placeholder="Password"><br>
+<button onclick="login()">Login</button>
+<button onclick="signup()">Sign Up</button>
+</div>
+</body>
+</html>
