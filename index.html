@@ -1,0 +1,104 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Krushna Mens Wear</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+<div class="logo">Krushna Mens Wear</div>
+<div class="search">
+<input type="text" id="search" placeholder="Search product..." onkeyup="searchProduct()">
+</div>
+</header>
+
+<div class="hero">
+<h1>Premium Mens Collection</h1>
+<p>Best Quality | Best Price</p>
+<button onclick="scrollToProducts()">Shop Now</button>
+</div>
+
+<div class="section" id="productsSection">
+<h2>Featured Products</h2>
+<div class="grid" id="products"></div>
+</div>
+
+<div id="cart">
+<h3>Cart</h3>
+<div id="cartItems"></div>
+</div>
+
+<script>
+let products = [
+{id:1,name:"T-Shirt",price:999,discount:499,image:"https://via.placeholder.com/200",meesho:"#"},
+{id:2,name:"Shirt",price:1499,discount:799,image:"https://via.placeholder.com/200",meesho:"#"},
+{id:3,name:"Jeans",price:1999,discount:999,image:"https://via.placeholder.com/200",meesho:"#"}];
+
+let cart=[];
+
+function loadProducts(){
+let html="";
+products.forEach(p=>{
+html+=`
+<div class="card">
+<img src="${p.image}">
+<h3>${p.name}</h3>
+<div><span class="price">₹${p.discount}</span> <span class="old">₹${p.price}</span></div>
+<button onclick="addToCart(${p.id})">Add to Cart</button>
+<a href="${p.meesho}" target="_blank"><button>Buy Now</button></a>
+</div>`;
+});
+document.getElementById("products").innerHTML=html;
+}
+
+function addToCart(id){
+let item=products.find(p=>p.id===id);
+cart.push(item);
+renderCart();
+}
+
+function renderCart(){
+let html="";
+let total=0;
+cart.forEach((p,i)=>{
+total+=p.discount;
+html+=`<p>${p.name} - ₹${p.discount} <button onclick="removeItem(${i})">X</button></p>`;
+});
+html+=`<hr>Total: ₹${total}`;
+document.getElementById("cartItems").innerHTML=html;
+}
+
+function removeItem(i){
+cart.splice(i,1);
+renderCart();
+}
+
+function searchProduct(){
+let val=document.getElementById("search").value.toLowerCase();
+let filtered=products.filter(p=>p.name.toLowerCase().includes(val));
+let html="";
+filtered.forEach(p=>{
+html+=`
+<div class="card">
+<img src="${p.image}">
+<h3>${p.name}</h3>
+<div><span class="price">₹${p.discount}</span> <span class="old">₹${p.price}</span></div>
+<button onclick="addToCart(${p.id})">Add to Cart</button>
+<a href="${p.meesho}" target="_blank"><button>Buy Now</button></a>
+</div>`;
+});
+document.getElementById("products").innerHTML=html;
+}
+
+function scrollToProducts(){
+document.getElementById("productsSection").scrollIntoView({behavior:"smooth"});
+}
+
+window.onload=loadProducts;
+</script>
+
+</body>
+</html>
